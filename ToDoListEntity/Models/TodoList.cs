@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace TodoListApp.Entities.Models;
 
@@ -11,7 +12,7 @@ public class TodoList
 
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
-  //  [BsonSerializer()]//TODO
+    [StringLength(255, ErrorMessage = "Name must be under 255 characters.")]
     public required string Name { get; set; }
 
     public required string OwnerId { get; set; }
