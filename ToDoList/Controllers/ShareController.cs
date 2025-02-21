@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TodoListApp.Domain;
-using TodoListApp.Entities;
 
 namespace TodoListApp.Api.Controllers;
 
@@ -9,14 +8,11 @@ namespace TodoListApp.Api.Controllers;
 public class ShareController : ControllerBase
 {
     private readonly IListShareService _shareService;
-    private readonly TodoListServiceResponceProcessor _responceProcessor;
 
     public ShareController(IUserService userService,
-        IListShareService shareService, ITodoListService todoService,
-        TodoListServiceResponceProcessor responceProcessor)
+        IListShareService shareService, ITodoListService todoService)
     {
         _shareService = shareService;
-        _responceProcessor = responceProcessor;
     }
 
     /// <summary>
@@ -26,22 +22,22 @@ public class ShareController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ShareRequest shareRequest)
     {
-        var res = await _shareService.AddShareAsync(shareRequest.TodoListId,shareRequest.UserId);
-        return _responceProcessor.Process(res);
+         await _shareService.AddShareAsync(shareRequest.TodoListId,shareRequest.UserId);
+        return Ok();
     }
 
     [HttpGet("todolist/{todoListId}/shares")]
     public async Task<IActionResult> GetShares(string todoListId)
     {
         var res = await _shareService.GetSharesForTodoListAsync(todoListId);
-        return _responceProcessor.Process(res);
+        return Ok(res);
     }  
 
     [HttpDelete("todolist/{todoListId}/shares/{userId}")]
     public async Task<IActionResult> DeleteTodoList(string todoListId, string userId)
     {
-        var res = await _shareService.DeleteShareAsync(todoListId, userId);
-        return _responceProcessor.Process(res);
+        await _shareService.DeleteShareAsync(todoListId, userId);
+        return Ok();
     }
 
     public record ShareRequest( string TodoListId, string UserId);

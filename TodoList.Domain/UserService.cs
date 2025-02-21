@@ -24,19 +24,20 @@ public class UserService : IUserService
             || !_contextAccessor.HttpContext.Request.Headers.TryGetValue("UserId", out var userId))
             throw new UnauthorizedAccessException();
         if(string.IsNullOrEmpty(userId))
-            throw new UnauthorizedAccessException("invalid Id");
+            throw new UnauthorizedAccessException("invalid user Id");
 
         var user = await _repository.GetUserByIdAsync(userId);
         return user is null
-            ? throw new ArgumentException("user not found")
+            ? throw new ArgumentException("User not found")
             : user;
     }
+
     public bool CanAccess(User user, TodoList todo, AccessType access = AccessType.View)
     {
         return user != null
-&& todo != null
-&& (todo.OwnerId == user.Id
-|| (todo.SharedWith.Contains(user.Id)
-            && (access == AccessType.View || access == AccessType.Edit)));
+            && todo != null
+            && (todo.OwnerId == user.Id
+                || (todo.SharedWith.Contains(user.Id)
+                    && (access == AccessType.View || access == AccessType.Edit)));
     }
 }

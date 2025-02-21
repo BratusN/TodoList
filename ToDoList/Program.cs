@@ -1,9 +1,9 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using TodoListApp.Api;
 using TodoListApp.Domain;
-using TodoListApp.Domain.Respponse;
 using TodoListApp.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,9 +23,6 @@ builder.Services.AddScoped<ITodoListRepository, TodoListRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITodoListService, TodoListService>();
 builder.Services.AddScoped<IListShareService, ListShareService>();
-builder.Services.AddScoped<IResponseBuilder, ResponseBuilder>();
-builder.Services.AddScoped<IExceptionHandler, ExceptionHandler>();
-builder.Services.AddScoped<TodoListServiceResponceProcessor>();
 builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -70,5 +67,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseApiExceptionMiddleware();
 app.Run();
